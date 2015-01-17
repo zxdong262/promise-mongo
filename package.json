@@ -1,0 +1,40 @@
+{
+	"name": "promise-mongo"
+	,"version": "0.0.1"
+	,"description": "a mongodb wrapper, make everything return promise."
+	,"main": "index.js"
+	,"scripts": {
+		"test": "mocha --reporter spec"
+	}
+	,"repository": {
+		"type": "git"
+		,"url": "https://github.com/zxdong262/promise-mongo.git"
+	}
+	,"keywords": [
+		"mongodb"
+		,"promise"
+	]
+	,"author": {
+		"name": "ZHAO Xudong"
+		,"email": "zxdong@gmail.com"
+		,"url": "http://html5beta.com"
+	}
+	,"scripts": {
+		"start": "node app.js"
+	}
+	,"dependencies": {
+		"lodash": "*"
+		,"mongodb": "*"
+	}
+	,"devDependencies": {
+		"mocha": "^2.0.0"
+	}
+	,"license": "MIT"
+	,"bugs": {
+		"url": "https://github.com/zxdong262/promise-mongo/issues"
+	}
+	,"homepage": "https://github.com/zxdong262/promise-mongo"
+	,"engines": {
+		"node": ">= 0.11.13"
+	}
+}
