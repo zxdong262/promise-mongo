@@ -111,6 +111,19 @@ function test() {
 			})
 		})
 
+		it('cursor.skip(count)',function(done) {
+			db['user' + uid].find({})
+			.then(function(cur) {
+				return cf.skip(cur, 1)
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+
+				assert(res.length === 3)
+				done()
+			})
+		})
+
 
 	})
 

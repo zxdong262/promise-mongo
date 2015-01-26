@@ -283,6 +283,15 @@ db.initCursorMethods = function() {
 		})
 	}
 
+	cf.skip = function(cur, count) {
+		return new Promise(function(resolve, reject) {
+			cur.skip(count || 0, function(err, val) {
+				if(err) reject(err)
+				else resolve(val)
+			})
+		})
+	}
+
 	return Promise.resolve()
 }
 

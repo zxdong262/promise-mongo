@@ -111,6 +111,9 @@ $ sudo npm install mocha -g
 $ mocha --reporter spec
 ```
 
+## change log
+
+0.0.2 add cursor.skip
 
 ## license
 
