@@ -4,12 +4,40 @@ var pm = require('..')
 var readFile = require('fs').readFile
 var uid = new Date().getTime()
 var collectionNames = ['user' + uid, 'post' + uid]
-var dbUrl = 'mongodb://127.0.0.1:27017/test' + uid
+var dbUrl = 'mongodb://127.0.0.1:27017/test'
 var _ = require('lodash')
 var util = require('util')
 
+/*! 
+ * test with replset
+var mongo = pm.mongo
+,RepelSet = mongo.ReplSet
+,Server = mongo.Server
+,repels = new RepelSet([
+	new Server({
+		host: '100.100.5.100'
+		,port: '27017'
+	})
+	,new Server({
+		host: '100.100.5.99'
+		,port: '27017'
+	})
+	,new Server({
+		host: '100.100.5.98'
+		,port: '27017'
+	})
+])
+
+*/
+
 describe('pm.initDb', function() {
 	it('all db collection Methods created', function(done) {
+		/*! 
+ 		 * test with replset
+
+		pm.initDb(collectionNames, dbUrl, { replSet: repels })
+
+		 */
 		pm.initDb(collectionNames, dbUrl)
 		.then(function() {
 			test()

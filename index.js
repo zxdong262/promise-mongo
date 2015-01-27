@@ -13,6 +13,10 @@ slice = Array.prototype.slice
 db.cf = {}
 db.cols = {}
 
+//expose mongo 
+db.mongo = mongo
+
+
 /**
  * make a thunk function to promise function
  * which returns a promise
@@ -21,7 +25,7 @@ db.cols = {}
  * @return {Function}
  * @api public
  */
- 
+
 db.toPromise = function(thunk) {
 	return function() {
 		var args = slice.call(arguments)

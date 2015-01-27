@@ -1,6 +1,6 @@
 {
 	"name": "promise-mongo"
-	,"version": "0.0.2"
+	,"version": "0.0.3"
 	,"description": "a mongodb wrapper, make everything return promise."
 	,"main": "index.js"
 	,"scripts": {
