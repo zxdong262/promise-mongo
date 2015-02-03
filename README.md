@@ -37,7 +37,8 @@ $ npm install promise-mongo
 ## use
 
 ```javascript
-var pm = require('promise-mongo')
+var PM = require('promise-mongo')
+var pm = new PM()
 var collectionNames = [ 'user', 'book', 'post' ]
 pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test')
 .then(function(mdb) {
@@ -72,7 +73,8 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test')
 use replset
 
 ```javascript
-var pm = require('promise-mongo')
+var PM = require('promise-mongo')
+var pm = new PM()
 var collectionNames = [ 'user', 'book', 'post' ]
 var mongo = pm.mongo
 ,RepelSet = mongo.ReplSet
@@ -177,6 +179,8 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.1.0 now return PM instance, support multi connection
 
 0.0.3 expose mongodb to pm.mongo
 

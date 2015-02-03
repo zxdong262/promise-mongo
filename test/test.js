@@ -1,6 +1,7 @@
 
 var assert = require('assert')
-var pm = require('..')
+var PM = require('..')
+var pm = new PM()
 var readFile = require('fs').readFile
 var uid = new Date().getTime()
 var collectionNames = ['user' + uid, 'post' + uid]

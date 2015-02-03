@@ -6,16 +6,19 @@
 var
 slice = Array.prototype.slice
 ,mongo = require('mongodb')
-,mongoClient = mongo.MongoClient
-,db = exports
 ,_ = require('lodash')
 
-db.cf = {}
-db.cols = {}
 
-//expose mongo 
-db.mongo = mongo
+//main factory
+function PM() {
+	this.init()
+}
 
+PM.prototype.init = function() {
+	this.cf = {}
+	this.cols = {}
+	this.mongo = mongo
+}
 
 /**
  * make a thunk function to promise function
@@ -26,7 +29,8 @@ db.mongo = mongo
  * @api public
  */
 
-db.toPromise = function(thunk) {
+
+PM.prototype.toPromise = function(thunk) {
 	return function() {
 		var args = slice.call(arguments)
 		,ctx = this
@@ -40,7 +44,7 @@ db.toPromise = function(thunk) {
 	}
 }
 
-var toPromise = db.toPromise
+PM.prototype.connect = PM.prototype.toPromise(mongo.MongoClient.connect)
 
 /**
  * init db operation
@@ -54,17 +58,17 @@ var toPromise = db.toPromise
  * @api public
  */
 
-db.initDb = function(collectionNames) {
-	
+PM.prototype.initDb = function(collectionNames) {
+	var th = this
 	var connectAgrs = slice.call(arguments, 1)
 
 	//init db obj
-	return Promise.all([db.initDbCols(collectionNames), db.initCursorMethods()])
+	return Promise.all([this.initDbCols(collectionNames), this.initCursorMethods()])
 	.then(function() {
-		return db.connect.apply(null, connectAgrs)
+		return th.connect.apply(null, connectAgrs)
 	})
 	.then(function(mdb) {
-		return db.initColMethods(mdb, collectionNames)
+		return th.initColMethods(mdb, collectionNames)
 	})
 
 
@@ -81,14 +85,15 @@ db.initDb = function(collectionNames) {
  * @api public
  */
 
-db.initDbCols = function(collectionNames) {
+PM.prototype.initDbCols = function(collectionNames) {
 
+	var th = this
 	//if string, convert to array
 	if(!_.isArray(collectionNames)) collectionNames = [collectionNames]
 
 	//init db.collection objects
 	_.each(collectionNames, function(col) {
-		db.cols[col] = {}
+		th.cols[col] = {}
 	})
 
 	return Promise.resolve()
@@ -107,7 +112,7 @@ db.initDbCols = function(collectionNames) {
  * @api public
  */
 
-db.connect = toPromise(mongoClient.connect)
+
 
 /**
  * init dcollection methods, like db.users.find...
@@ -118,14 +123,15 @@ db.connect = toPromise(mongoClient.connect)
  * @api public
  */
 
-db.initColMethods = function(mdb, collectionNames) {
+PM.prototype.initColMethods = function(mdb, collectionNames) {
 
+	var th = this
 	//if string, convert to array
 	if(!_.isArray(collectionNames)) collectionNames = [collectionNames]
 
 	_.each(collectionNames, function(col) {
 
-		db.cols[col].findOne = function(query, options) {
+		th.cols[col].findOne = function(query, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).findOne(query || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -134,7 +140,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].save = function(doc) {
+		th.cols[col].save = function(doc) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).save(doc || {}, function(err, result) {
 					if(err) reject(err)
@@ -143,7 +149,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].find = function(query) {
+		th.cols[col].find = function(query) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).find(query || {}, function(err, result) {
 					if(err) reject(err)
@@ -152,7 +158,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].update = function(selector, doc, options) {
+		th.cols[col].update = function(selector, doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).update(selector || {}, doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -161,7 +167,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].remove = function(selector, options) {
+		th.cols[col].remove = function(selector, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).remove(selector || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -170,7 +176,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].group = function(keys, condition, initial, reduce, finalize, command, options) {
+		th.cols[col].group = function(keys, condition, initial, reduce, finalize, command, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col)
 				.group(keys, condition, initial, reduce, finalize, command, options || {}, function(err, result) {
@@ -180,7 +186,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].insert = function(doc, options) {
+		th.cols[col].insert = function(doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).insert(doc || {}, options || {},  function(err, result) {
 					if(err) reject(err)
@@ -189,7 +195,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].mapReduce = function(map, reduce, options) {
+		th.cols[col].mapReduce = function(map, reduce, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).mapReduce(map || {}, reduce || {}, options || null, function(err, result) {
 					if(err) reject(err)
@@ -198,7 +204,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].insertMany = function(docs, options) {
+		th.cols[col].insertMany = function(docs, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).insertMany(docs || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -207,7 +213,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}	
 
-		db.cols[col].insertOne = function(doc, options) {
+		th.cols[col].insertOne = function(doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).insertOne(doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -216,7 +222,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}	
 
-		db.cols[col].count = function(query, options) {
+		th.cols[col].count = function(query, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).count(query || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -225,7 +231,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].drop = function() {
+		th.cols[col].drop = function() {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).drop({}, function(err, result) {
 					if(err) reject(err)
@@ -234,7 +240,7 @@ db.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		db.cols[col].findAndModify = function(query, sort, doc, options) {
+		th.cols[col].findAndModify = function(query, sort, doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).findAndModify(query || {}, sort || {}, doc || {}, options || null, function(err, result) {
 					if(err) reject(err)
@@ -256,9 +262,10 @@ db.initColMethods = function(mdb, collectionNames) {
  * @api public
  */
 
-db.initCursorMethods = function() {
+PM.prototype.initCursorMethods = function() {
 
-	var cf = db.cf
+	var th = this
+	,cf = th.cf
 	
 	cf.toArray = function(cur) {
 		return new Promise(function(resolve, reject) {
@@ -299,4 +306,7 @@ db.initCursorMethods = function() {
 	return Promise.resolve()
 }
 
+
+//expose
+module.exports = PM
 
