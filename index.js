@@ -242,7 +242,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 
 		th.cols[col].findAndModify = function(query, sort, doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).findAndModify(query || {}, sort || {}, doc || {}, options || null, function(err, result) {
+				mdb.collection(col).findAndModify(query || {}, sort || [], doc || {}, options || null, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})

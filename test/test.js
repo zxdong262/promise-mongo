@@ -72,6 +72,19 @@ function test() {
 			})
 		})
 
+		it('db.col.findAndModify()',function(done) {
+			db['user' + uid].findAndModify(
+				{ name: 'test' + uid }
+				,[[ 'name', 1 ]]
+				,{ $set: { a: 1 } }
+				,{ new: true }
+			)
+			.then(function(res) {
+				assert(res.a === 1)
+				done()
+			})
+		})
+
 		it('db.col.insert(doc)',function(done) {
 			db['user' + uid].insert({ name: 'test' + uid + '0'})
 			.then(function(res) {
