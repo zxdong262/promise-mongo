@@ -76,7 +76,7 @@ use replset
 var PM = require('promise-mongo')
 var pm = new PM()
 var collectionNames = [ 'user', 'book', 'post' ]
-var mongo = pm.mongo
+var mongo = PM.mongo
 ,RepelSet = mongo.ReplSet
 ,Server = mongo.Server
 ,repls = new RepelSet([
@@ -162,7 +162,7 @@ exposed function & reference
 pm.toPromise
 
 //pm.mongo = require('mongodb')
-pm.mongo
+pm.mongo //or PM.mongo
 ```
 
 ## test
@@ -179,6 +179,8 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.1.1 expose PM.mongo
 
 0.1.0 now return PM instance, support multi connection
 

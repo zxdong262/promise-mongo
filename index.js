@@ -14,6 +14,8 @@ function PM() {
 	this.init()
 }
 
+PM.mongo = mongo
+
 PM.prototype.init = function() {
 	this.cf = {}
 	this.cols = {}
