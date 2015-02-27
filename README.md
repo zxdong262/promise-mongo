@@ -161,8 +161,12 @@ exposed function & reference
 //make a callback function return promise
 pm.toPromise
 
-//pm.mongo = require('mongodb')
+//pm.mongo = PM.mongo = require('mongodb')
 pm.mongo //or PM.mongo
+
+//mongodb instance
+pm.mdb
+
 ```
 
 ## test
@@ -179,6 +183,8 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.1.2 expose mongodb instance to `pm.mdb`
 
 0.1.1 expose PM.mongo
 

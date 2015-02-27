@@ -70,6 +70,7 @@ PM.prototype.initDb = function(collectionNames) {
 		return th.connect.apply(null, connectAgrs)
 	})
 	.then(function(mdb) {
+		th.mdb = mdb
 		return th.initColMethods(mdb, collectionNames)
 	})
 

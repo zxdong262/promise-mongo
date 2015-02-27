@@ -169,6 +169,15 @@ function test() {
 
 	})
 
+
+	describe('mongodb instance exposed', function() {
+
+		it('pm.mdb exist',function() {
+			assert(pm.mdb)
+		})
+
+	})
+
 }
 
 
