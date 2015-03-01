@@ -91,11 +91,13 @@ PM.prototype.initDb = function(collectionNames) {
 PM.prototype.initDbCols = function(collectionNames) {
 
 	var th = this
+	,_collectionNames = collectionNames
+
 	//if string, convert to array
-	if(!_.isArray(collectionNames)) collectionNames = [collectionNames]
+	if(!_.isArray(_collectionNames)) _collectionNames = [_collectionNames]
 
 	//init db.collection objects
-	_.each(collectionNames, function(col) {
+	_.each(_collectionNames, function(col) {
 		th.cols[col] = {}
 	})
 
@@ -129,10 +131,12 @@ PM.prototype.initDbCols = function(collectionNames) {
 PM.prototype.initColMethods = function(mdb, collectionNames) {
 
 	var th = this
-	//if string, convert to array
-	if(!_.isArray(collectionNames)) collectionNames = [collectionNames]
+	,_collectionNames = collectionNames
 
-	_.each(collectionNames, function(col) {
+	//if string, convert to array
+	if(!_.isArray(_collectionNames)) _collectionNames = [_collectionNames]
+
+	_.each(_collectionNames, function(col) {
 
 		th.cols[col].findOne = function(query, options) {
 			return new Promise(function(resolve, reject) {

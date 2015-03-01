@@ -184,6 +184,8 @@ $ mocha --reporter spec
 
 ## change log
 
+0.1.3 code optimazation, do not use argument directly(but still use slice)
+
 0.1.2 expose mongodb instance to `pm.mdb`
 
 0.1.1 expose PM.mongo
