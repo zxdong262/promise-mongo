@@ -4,8 +4,7 @@
 
 //glob var
 var
-slice = Array.prototype.slice
-,mongo = require('mongodb')
+mongo = require('mongodb')
 ,_ = require('lodash')
 
 
@@ -34,8 +33,15 @@ PM.prototype.init = function() {
 
 PM.prototype.toPromise = function(thunk) {
 	return function() {
-		var args = slice.call(arguments)
-		,ctx = this
+
+		//arguments to array
+		var $_len = arguments.length
+		var args = new Array($_len)
+		for(var $_i = 0; $_i < $_len; ++$_i) {
+			args[$_i] = arguments[$_i]
+		}
+
+		var ctx = this
 		return new Promise(function(resolve, reject) {
 			args.push(function(err, val){
 				if(err) reject(err)
@@ -62,7 +68,13 @@ PM.prototype.connect = PM.prototype.toPromise(mongo.MongoClient.connect)
 
 PM.prototype.initDb = function(collectionNames) {
 	var th = this
-	var connectAgrs = slice.call(arguments, 1)
+
+	//arguments to array
+	var $_len = arguments.length
+	var connectAgrs = new Array($_len - 1)
+	for(var $_i = 1; $_i < $_len; ++$_i) {
+		connectAgrs[$_i - 1] = arguments[$_i]
+	}
 
 	//init db obj
 	return Promise.all([this.initDbCols(collectionNames), this.initCursorMethods()])
