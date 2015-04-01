@@ -24,9 +24,9 @@ db.user.find()
 
 ```
 
-## Platform Compatibility
+## about promise
 
-`promise-mongo` requires a Promise implementation. For versions of node < 0.11 , you should/must include your own Promise polyfill.
+if no `global.Promise`, will use `promise` module.
 
 ## Installation
 
@@ -183,6 +183,8 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.2.0 include promise module for non-es6 user.
 
 0.1.4 code optimazation, use inline slice(arguments)
 

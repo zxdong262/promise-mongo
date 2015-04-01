@@ -7,6 +7,9 @@ var
 mongo = require('mongodb')
 ,_ = require('lodash')
 
+//promise global object check
+,Promise = global.Promise || require('promise')
+
 
 //main factory
 function PM() {
