@@ -184,6 +184,8 @@ $ mocha --reporter spec
 
 ## change log
 
+0.2.1 use mongodb 1.4 (not compatible with 2.0.25 yet).
+
 0.2.0 include promise module for non-es6 user.
 
 0.1.4 code optimazation, use inline slice(arguments)

@@ -1,6 +1,6 @@
 {
 	"name": "promise-mongo"
-	,"version": "0.2.0"
+	,"version": "0.2.1"
 	,"description": "a mongodb wrapper, make everything return promise."
 	,"main": "index.js"
 	,"scripts": {
@@ -24,7 +24,7 @@
 	}
 	,"dependencies": {
 		"lodash": "*"
-		,"mongodb": "*"
+		,"mongodb": "^1.4"
 		,"promise": "*"
 	}
 	,"devDependencies": {
