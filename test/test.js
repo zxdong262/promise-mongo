@@ -72,6 +72,14 @@ function test() {
 			})
 		})
 
+		it('db.col.findOne() with option fields',function(done) {
+			db['user' + uid].findOne({ name: 'test' + uid }, { fields: { _id: 0 } })
+			.then(function(res) {
+				assert(res && !res._id)
+				done()
+			})
+		})
+
 		it('db.col.findAndModify()',function(done) {
 			db['user' + uid].findAndModify(
 				{ name: 'test' + uid }
@@ -108,6 +116,71 @@ function test() {
 			})
 			.then(function(res) {
 				assert(res.name === 'updated')
+				done()
+			})
+		})
+
+		it('db.col.remove()',function(done) {
+
+			db['user' + uid].insert({ name: 'test' + uid + 'x'})
+			.then(function(res) {
+				return db['user' + uid].remove({ name: 'test' + uid + 'x' })
+			})
+			.then(function() {
+				return db['user' + uid].findOne({ name: 'test' + uid + 'x' })
+			})
+			.then(function(res) {
+				assert(!res)
+				done()
+			})
+		})
+
+		it('db.col.count()',function(done) {
+
+			db['user' + uid].count({ name: 'test' + uid + '0'})
+			.then(function(res) {
+				assert(res === 1)
+				done()
+			})
+		})
+
+		it('db.col.find()',function(done) {
+
+			db['user' + uid].find()
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 4)
+				done()
+			})
+		})
+
+		it('db.col.find() with option(skip)',function(done) {
+
+			db['user' + uid].find({}, { skip: 1 })
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 3)
+				done()
+			})
+		})
+
+		it('db.col.find() with option(limit)',function(done) {
+
+			db['user' + uid].find({}, { limit: 1 })
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 1)
+				done()
+			})
+		})
+
+
+		it('db.col.find() with option(fields)',function(done) {
+
+			db['user' + uid].find({}, { fields: { name: 1, _id: 0 } })
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length && !res[0]._id && res[0].name)
 				done()
 			})
 		})
@@ -172,9 +245,14 @@ function test() {
 
 	describe('mongodb instance exposed', function() {
 
-		it('pm.mdb exist',function() {
-			assert(pm.mdb)
+		it('pm.mdb exist and drop ok',function(done) {
+			pm.mdb.dropDatabase(function(err, result) {
+				assert(!err && result)
+				done()
+			})
+			
 		})
+
 
 	})
 

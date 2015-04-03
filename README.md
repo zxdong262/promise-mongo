@@ -108,14 +108,26 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
 	var cf = pm.cf
 
 	//now do it
-	db.user.findOne()
+	db.user.findOne({ name: 'aya' }, {
+		fields: { _id: false }
+	})
 	.then(function(user) {
 		console.log(user)
 	})
 
+	db.user.find({}, {
+		limit: 1
+		,skip: 1
+		,fields: { _id: 0 }
+	})
+	.then(cf.toArray)
+	.then(function(users) {
+		console.log(users)
+	})
+
 	db.user.find()
-	.then(function(cursor) {
-		return cf.limit(cursor, 2)
+	.then(function(cur) {
+		return cf.limit(cur, 1)
 	})
 	.then(cf.toArray)
 	.then(function(users) {
@@ -134,7 +146,7 @@ collection methods:
 ```javascript
 db.collectionName.findOne = function(query, options)
 db.collectionName.save = function(doc) 
-db.collectionName.find = function(query) 
+db.collectionName.find = function(query, options) 
 db.collectionName.update = function(selector, doc, options) 
 db.collectionName.remove = function(selector, options) 
 db.collectionName.group = function(keys, condition, initial, reduce, finalize, command, options) 
@@ -184,6 +196,11 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.3.0
+
++ collection.find() now have `options` param.
++ add tests for collection.find(), collection.remove(), collection.count()
 
 0.2.1 use mongodb 1.4 (not compatible with 2.0.25 yet).
 

@@ -171,9 +171,9 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		th.cols[col].find = function(query) {
+		th.cols[col].find = function(query, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).find(query || {}, function(err, result) {
+				mdb.collection(col).find(query || {}, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
