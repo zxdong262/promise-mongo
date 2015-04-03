@@ -153,6 +153,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 
 	_.each(_collectionNames, function(col) {
 
+		//done
 		th.cols[col].findOne = function(query, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).findOne(query || {}, options || {}, function(err, result) {
@@ -162,15 +163,17 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		th.cols[col].save = function(doc) {
+		//ok
+		th.cols[col].save = function(doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).save(doc || {}, function(err, result) {
+				mdb.collection(col).save(doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
 		}
 
+		//ok
 		th.cols[col].find = function(query, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).find(query || {}, options || {}, function(err, result) {
@@ -180,7 +183,18 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
+		//ok: use updateMany inside
 		th.cols[col].update = function(selector, doc, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).updateMany(selector || {}, doc || {}, options || {}, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
+		th.cols[col].updateOne = function(selector, doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).update(selector || {}, doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
@@ -189,15 +203,57 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		th.cols[col].remove = function(selector, options) {
+		//ok
+		th.cols[col].updateMany = function(selector, doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).remove(selector || {}, options || {}, function(err, result) {
+				mdb.collection(col).update(selector || {}, doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
 		}
 
+		//ok:use deleteMany inside for legacy, should use deleteOne when delete one 
+		th.cols[col].remove = function(selector, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).deleteMany(selector || {}, options || {}, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
+		th.cols[col].deleteMany = function(selector, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).deleteMany(selector || {}, options || {}, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
+		th.cols[col].deleteOne = function(selector, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).deleteOne(selector || {}, options || {}, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
+		th.cols[col].distinct = function(key, query, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).distinct(key || '', query || {}, options || {}, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
 		th.cols[col].group = function(keys, condition, initial, reduce, finalize, command, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col)
@@ -208,33 +264,41 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
+		//ok: use insertOne and insertMany inside
 		th.cols[col].insert = function(doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).insert(doc || {}, options || {},  function(err, result) {
+				if(_.isArray(doc)) mdb.collection(col).insertMany(doc || [], options || {},  function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+				else mdb.collection(col).insertOne(doc || {}, options || {},  function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
 		}
 
+		//ok
 		th.cols[col].mapReduce = function(map, reduce, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).mapReduce(map || {}, reduce || {}, options || null, function(err, result) {
+				mdb.collection(col).mapReduce(map || '', reduce || '', options || null, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
 		}
 
+		//ok
 		th.cols[col].insertMany = function(docs, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).insertMany(docs || {}, options || {}, function(err, result) {
+				mdb.collection(col).insertMany(docs || [], options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
 		}	
 
+		//ok
 		th.cols[col].insertOne = function(doc, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).insertOne(doc || {}, options || {}, function(err, result) {
@@ -244,6 +308,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}	
 
+		//ok
 		th.cols[col].count = function(query, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).count(query || {}, options || {}, function(err, result) {
@@ -253,6 +318,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
+		//ok
 		th.cols[col].drop = function() {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col).drop({}, function(err, result) {
@@ -262,14 +328,63 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		th.cols[col].findAndModify = function(query, sort, doc, options) {
+		//ok: use updateOne inside
+		th.cols[col].findAndModify = function(_query, _sort, _doc, _options) {
+			var query = _query || {}
+			,sort = _sort || {}
+			,doc = _doc || {}
+			,options = _options || {}
+
+			//options.new -> options.returnOriginal
+			if(!_.isUndefined(options.new)) options.returnOriginal = options.new
+
+			//options.fields -> options.projection
+			if(options.fields) options.projection = options.fields
+
+			//options.wtimeout -> options.maxTimeMS
+			if(options.wtimeout) options.maxTimeMS = options.wtimeout
+
+			//sort -> options.sort
+			if(
+				_.isArray(sort) && 
+				_.isArray(sort[0]) && 
+				sort[0].length === 2 && _.isString(sort[0][0])
+			) {
+				options.sort = {}
+				options.sort[sort[0][0]] = sort[0][1]
+			}
+
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).findAndModify(query || {}, sort || [], doc || {}, options || null, function(err, result) {
+				if(options.remove) mdb.collection(col).findOneAndDelete(query, options, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+				else mdb.collection(col).findOneAndUpdate(query, doc, options, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
 			})
-		}	
+		}
+
+		//ok
+		th.cols[col].findOneAndUpdate = function(filter, update, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).findOneAndUpdate(filter || {}, update || {}, options || null, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
+
+		//ok
+		th.cols[col].findOneAndDelete = function(filter, options) {
+			return new Promise(function(resolve, reject) {
+				mdb.collection(col).findOneAndDelete(filter || {}, options || null, function(err, result) {
+					if(err) reject(err)
+					else resolve(result)
+				})
+			})
+		}
 
 	})
 
@@ -298,31 +413,19 @@ PM.prototype.initCursorMethods = function() {
 		})
 	}
 
+	//Deprecated
 	cf.limit = function(cur, count) {
-		return new Promise(function(resolve, reject) {
-			cur.limit(count || 0, function(err, val) {
-				if(err) reject(err)
-				else resolve(val)
-			})
-		})
+		return Promise.resolve(cur.limit(count || 0))
 	}
 
+	//Deprecated
 	cf.sort = function(cur, sort) {
-		return new Promise(function(resolve, reject) {
-			cur.sort(sort || {}, function(err, val) {
-				if(err) reject(err)
-				else resolve(val)
-			})
-		})
+		return Promise.resolve(cur.sort(sort || {}))
 	}
 
+	//Deprecated
 	cf.skip = function(cur, count) {
-		return new Promise(function(resolve, reject) {
-			cur.skip(count || 0, function(err, val) {
-				if(err) reject(err)
-				else resolve(val)
-			})
-		})
+		return Promise.resolve(cur.skip(count || 0))
 	}
 
 	return Promise.resolve()

@@ -43,9 +43,6 @@ describe('pm.initDb', function() {
 		.then(function() {
 			test()
 			done()
-		}, function(err) {
-			assert(!err)
-			done()
 		})
 	})
 })
@@ -56,78 +53,113 @@ function test() {
 
 	describe('db.collectionName.collectionMethod()', function() {
 
-		it('db.col.save()',function(done) {
-			db['user' + uid].save({ name: 'test' + uid })
+		it('db.col.insert(doc)',function(done) {
+			db['user' + uid].insert({ name: 'dci' + uid })
+			.then(function() {
+				return db['user' + uid].findOne({ name: 'dci' + uid })
+			})
 			.then(function(res) {
-				assert(res)
+				assert(res.name === 'dci' + uid)
+				done()
+			})
+		})
+
+		it('db.col.insert(docArray)',function(done) {
+			db['user' + uid].insert([{ aa: 1 }, { aa: 2 }])
+			.then(function() {
+				return db['user' + uid].find({ aa: { $exist: true } })
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(
+					res.length === 2 &&
+					res[0].aa &&
+					res[1].aa
+				)
+				done()
+			})
+		})
+
+		it('db.col.save()',function(done) {
+			db['user' + uid].save({ name: 'dcs' + uid })
+			.then(function() {
+				return db['user' + uid].findOne({ name: 'dcs' + uid })
+			})
+			.then(function(res) {
+				assert(res.name === 'dcs' + uid)
 				done()
 			})
 		})
 
 		it('db.col.findOne()',function(done) {
-			db['user' + uid].findOne({ name: 'test' + uid })
+			db['user' + uid].insert({ name: 'dcfo' + uid })
+			.then(function() {
+				return db['user' + uid].findOne({ name: 'dcfo' + uid })
+			})
 			.then(function(res) {
-				assert(res)
+				assert(res.name === 'dcfo' + uid)
 				done()
 			})
 		})
 
-		it('db.col.findOne() with option fields',function(done) {
-			db['user' + uid].findOne({ name: 'test' + uid }, { fields: { _id: 0 } })
+		it('db.col.findOne() with option:fields',function(done) {
+			db['user' + uid].insert({ name: 'dcfo1' + uid })
+			.then(function() {
+				return db['user' + uid].findOne({ name: 'dcfo1' + uid }, { fields: { _id: 0 } })
+			})
 			.then(function(res) {
-				assert(res && !res._id)
+				assert(res.name === 'dcfo1' + uid && !res._id)
 				done()
 			})
 		})
 
-		it('db.col.findAndModify()',function(done) {
-			db['user' + uid].findAndModify(
-				{ name: 'test' + uid }
-				,[[ 'name', 1 ]]
-				,{ $set: { a: 1 } }
-				,{ new: true }
-			)
+		it('db.col.findAndModify() return original doc',function(done) {
+			db['user' + uid].insert({ name: 'dcfam1' + uid, a: 2 })
+			.then(function() {
+				return db['user' + uid].findAndModify(
+					{ name: 'dcfam1' + uid }
+					,[[ 'name', 1 ]]
+					,{ $set: { a: 1 } }
+					,{}
+				)
+			})
+			.then(function(res) {
+				assert(res.a === 2)
+				done()
+			})
+		})
+
+		it('db.col.findAndModify() return updated doc',function(done) {
+			db['user' + uid].insert({ name: 'dcfam' + uid, a: 2 })
+			.then(function() {
+				return db['user' + uid].findAndModify(
+					{ name: 'dcfam' + uid }
+					,[[ 'name', 1 ]]
+					,{ $set: { a: 1 } }
+					,{ new: true }
+				)
+			})
 			.then(function(res) {
 				assert(res.a === 1)
 				done()
 			})
 		})
 
-		it('db.col.insert(doc)',function(done) {
-			db['user' + uid].insert({ name: 'test' + uid + '0'})
-			.then(function(res) {
-				assert(res)
-				done()
-			})
-		})
-
-		it('db.col.insert(docArray)',function(done) {
-			db['user' + uid].insert([{ name: 'test' + uid + '0'}, { name: 'aya' }])
-			.then(function(res) {
-				assert(res)
-				done()
-			})
-		})
-
-		it('db.col.update()',function(done) {
-			db['user' + uid].update({ name: 'test' + uid + '0'}, { $set: { name: 'updated' }})
+		it('db.col.findAndModify() remove doc',function(done) {
+			db['user' + uid].insert({ name: 'dcfamr' + uid, a: 2 })
 			.then(function() {
-				return db['user' + uid].findOne({ name: 'updated' })
+				return db['user' + uid].findAndModify(
+					{ name: 'dcfamr' + uid }
+					,[[ 'name', 1 ]]
+					,{ $set: { a: 1 } }
+					,{ new: true }
+				)
 			})
 			.then(function(res) {
-				assert(res.name === 'updated')
-				done()
-			})
-		})
-
-		it('db.col.remove()',function(done) {
-
-			db['user' + uid].insert({ name: 'test' + uid + 'x'})
-			.then(function(res) {
-				return db['user' + uid].remove({ name: 'test' + uid + 'x' })
-			})
-			.then(function() {
-				return db['user' + uid].findOne({ name: 'test' + uid + 'x' })
+				assert(res.a === 1)
+				return db['user' + uid].findOne({
+					name: 'dcfamr' + uid
+				})
 			})
 			.then(function(res) {
 				assert(!res)
@@ -135,38 +167,48 @@ function test() {
 			})
 		})
 
-		it('db.col.count()',function(done) {
-
-			db['user' + uid].count({ name: 'test' + uid + '0'})
+		it('db.col.findOneAndDelete()',function(done) {
+			db['user' + uid].insert({ name: 'dcfd' + uid, a: 2 })
+			.then(function() {
+				return db['user' + uid].findOneAndDelete(
+					{ name: 'dcfd' + uid }
+				)
+			})
 			.then(function(res) {
-				assert(res === 1)
+				assert(res.name === 'dcfd' + uid)
+				return db['user' + uid].findOne({
+					name: 'dcfd' + uid
+				})
+			})
+			.then(function(res) {
+				assert(!res)
 				done()
 			})
 		})
 
-		it('db.col.find()',function(done) {
-
-			db['user' + uid].find()
+		it('db.col.update() will update all matches',function(done) {
+			db['user' + uid].insert([{ ax1: 1 }, { ax1: 1 }])
+			.then(function() {
+				return db['user' + uid].update({ ax1: 1 }, { $set: { c: 3 }})
+			})
+			.then(function() {
+				return db['user' + uid].find({ c: 3 })
+			})
 			.then(cf.toArray)
 			.then(function(res) {
-				assert(res.length === 4)
+				assert(res.length === 2)
 				done()
 			})
 		})
 
-		it('db.col.find() with option(skip)',function(done) {
-
-			db['user' + uid].find({}, { skip: 1 })
-			.then(cf.toArray)
-			.then(function(res) {
-				assert(res.length === 3)
-				done()
+		it('db.col.updateOne() only update one match',function(done) {
+			db['user' + uid].insert([{ bb: 1, xx: 2 }, { bb: 1, xx: 1 }])
+			.then(function() {
+				return db['user' + uid].updateOne({ bb: 1 }, { $set: { ax: 3 } })
 			})
-		})
-
-		it('db.col.find() with option(limit)',function(done) {
-
-			db['user' + uid].find({}, { limit: 1 })
+			.then(function() {
+				return db['user' + uid].find({ ax: 3 })
+			})
 			.then(cf.toArray)
 			.then(function(res) {
 				assert(res.length === 1)
@@ -174,15 +216,147 @@ function test() {
 			})
 		})
 
-
-		it('db.col.find() with option(fields)',function(done) {
-
-			db['user' + uid].find({}, { fields: { name: 1, _id: 0 } })
+		it('db.col.updateMany() update all matches',function(done) {
+			db['user' + uid].insert([{ cc: 1, xx: 2 }, { cc: 1, xx: 1 }])
+			.then(function() {
+				return db['user' + uid].updateMany({ cc: 1 }, { $set: { ccx: 3 } })
+			})
+			.then(function() {
+				return db['user' + uid].find({ ccx: 3 })
+			})
 			.then(cf.toArray)
 			.then(function(res) {
-				assert(res.length && !res[0]._id && res[0].name)
+				assert(res.length === 2)
 				done()
 			})
+		})
+
+		it('db.col.remove() will remove all matches',function(done) {
+
+			db['user' + uid].insert([{ rm: 1 }, { rm: 1 }])
+			.then(function(res) {
+				return db['user' + uid].remove({ rm: 1 })
+			})
+			.then(function() {
+				return db['user' + uid].findOne({ rm: 1 })
+			})
+			.then(function(res) {
+				assert(!res)
+				done()
+			})
+		})
+
+		it('db.col.deleteMany() will remove all matches',function(done) {
+
+			db['user' + uid].insert([{ dm: 1 }, { dm: 1 }])
+			.then(function(res) {
+				return db['user' + uid].deleteMany({ dm: 1 })
+			})
+			.then(function() {
+				return db['user' + uid].findOne({ dm: 1 })
+			})
+			.then(function(res) {
+				assert(!res)
+				done()
+			})
+
+		})
+
+		it('db.col.deleteOne() will remove all matches',function(done) {
+
+			db['user' + uid].insert([{ do: 1 }, { do: 1 }])
+			.then(function(res) {
+				return db['user' + uid].deleteOne({ do: 1 })
+			})
+			.then(function() {
+				return db['user' + uid].findOne({ do: 1 })
+			})
+			.then(function(res) {
+				assert(res.do)
+				done()
+			})
+			
+		})
+
+		it('db.col.count()',function(done) {
+			db['user' + uid].insert([{ ct: 1 }, { ct: 1 }])
+			.then(function(res) {
+				return db['user' + uid].count({ ct: 1 })
+			})
+			.then(function(res) {
+				assert(res === 2)
+				done()
+			})
+		})
+
+		it('db.col.find()',function(done) {
+
+			db['user' + uid].insert([{ fd: 1 }, { fd: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ fd: 1 })
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 2)
+				done()
+			})
+
+		})
+
+		it('db.col.find() with chained skip and limit',function(done) {
+
+			db['user' + uid].insert([{ fc: 1, fcaaa: 1 }, { fc: 1 }, { fc: 1 }, { fc: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ fc: 1 }).skip(1).limit(1)
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 1 && !res[0].fcaaa)
+				done()
+			})
+			
+		})
+
+		it('db.col.find() with option(skip)',function(done) {
+
+			db['user' + uid].insert([{ fcs: 1 }, { fcs: 1 }, { fcs: 1 }, { fcs: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ fcs: 1 }, { skip: 1 })
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 3)
+				done()
+			})
+			
+		})
+
+		it('db.col.find() with option(limit)',function(done) {
+
+			db['user' + uid].insert([{ fcl: 1 }, { fcl: 1 }, { fcl: 1 }, { fcl: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ fcl: 1 }, { limit: 1 })
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 3)
+				done()
+			})
+			
+		})
+
+		it('db.col.find() with option(limit)',function(done) {
+
+			db['user' + uid].insert([{ fcf: 1 }, { fcf: 1 }, { fcf: 1 }, { fcf: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ fcf: 1 }, fields: { _id: 0 })
+			})
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length && !res[0]._id)
+				done()
+			})
+			
 		})
 
 		//todo, more...
