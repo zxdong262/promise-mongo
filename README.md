@@ -2,6 +2,7 @@
 
 a mongodb wrapper, make everything return promise.
 
+
 ## intro
 
 with `promise-mongo` we can do it like this:
