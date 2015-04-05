@@ -5,7 +5,7 @@ var pm = new PM()
 var readFile = require('fs').readFile
 var uid = new Date().getTime()
 var collectionNames = ['user' + uid, 'post' + uid]
-var dbUrl = 'mongodb://127.0.0.1:27017/test'
+var dbUrl = 'mongodb://127.0.0.1:27017/test' + uid
 var _ = require('lodash')
 var util = require('util')
 
@@ -139,7 +139,7 @@ function test() {
 				done()
 			})
 		})
-/*
+
 		it('db.col.findAndModify() return original doc',function(done) {
 			db['user' + uid].insertOne({ name: 'dcfam1' + uid, a: 2 })
 			.then(function() {
@@ -157,17 +157,17 @@ function test() {
 		})
 
 		it('db.col.findAndModify() return updated doc',function(done) {
-			db['user' + uid].insertOne({ name: 'dcfam' + uid, a: 2 })
+			db['user' + uid].insertMany([{ name: 'dcfam' + uid, a: 2 }, { name: 'dcfam' + uid, a: 3 }])
 			.then(function() {
 				return db['user' + uid].findAndModify(
 					{ name: 'dcfam' + uid }
-					,[[ 'name', 1 ]]
-					,{ $set: { a: 1 } }
+					,[[ 'a', -1 ]]
+					,{ $set: { x: 1 } }
 					,{ new: true }
 				)
 			})
 			.then(function(res) {
-				assert(res.a === 1)
+				assert(res.x === 1 && res.a === 3)
 				done()
 			})
 		})
@@ -179,11 +179,11 @@ function test() {
 					{ name: 'dcfamr' + uid }
 					,[[ 'name', 1 ]]
 					,{ $set: { a: 1 } }
-					,{ new: true }
+					,{ remove: true }
 				)
 			})
 			.then(function(res) {
-				assert(res.a === 1)
+				assert(res.a === 2)
 				return db['user' + uid].findOne({
 					name: 'dcfamr' + uid
 				})
@@ -192,7 +192,21 @@ function test() {
 				assert(!res)
 				done()
 			})
-		})*/
+		})
+
+		it('db.col.findOneAndUpdate() return original doc',function(done) {
+			db['user' + uid].insertOne({ name: 'foau' + uid, a: 2 })
+			.then(function() {
+				return db['user' + uid].findOneAndUpdate(
+					{ name: 'foau' + uid }
+					,{ $set: { a: 1 } }
+				)
+			})
+			.then(function(res) {
+				assert(res.a === 2)
+				done()
+			})
+		})
 
 		it('db.col.findOneAndDelete()',function(done) {
 			db['user' + uid].insertOne({ name: 'dcfd' + uid, a: 2 })
@@ -202,18 +216,16 @@ function test() {
 				)
 			})
 			.then(function(res) {
-				console.log(res)
-				//assert(res.name === 'dcfd' + uid)
-				done()
-				/*return db['user' + uid].findOne({
+				assert(res.name === 'dcfd' + uid)
+				return db['user' + uid].findOne({
 					name: 'dcfd' + uid
-				})*/
+				})
 			})
-			/*
+			
 			.then(function(res) {
 				assert(!res)
 				done()
-			})*/
+			})
 		})
 
 		it('db.col.update() will update all matches',function(done) {

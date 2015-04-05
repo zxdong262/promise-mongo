@@ -318,50 +318,33 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 			})
 		}
 
-		//ok
-		th.cols[col].drop = function() {
-			return new Promise(function(resolve, reject) {
-				mdb.collection(col).drop({}, function(err, result) {
-					if(err) reject(err)
-					else resolve(result)
-				})
-			})
-		}
-
 		//ok: use updateOne inside
 		th.cols[col].findAndModify = function(_query, _sort, _doc, _options) {
 			var query = _query || {}
-			,sort = _sort || {}
+			,sort = _sort
 			,doc = _doc || {}
 			,options = _options || {}
 
 			//options.new -> options.returnOriginal
-			if(!_.isUndefined(options.new)) options.returnOriginal = options.new
+			options.returnOriginal = !options.new
 
 			//options.fields -> options.projection
-			if(options.fields) options.projection = options.fields
+			options.projection = options.fields
 
 			//options.wtimeout -> options.maxTimeMS
-			if(options.wtimeout) options.maxTimeMS = options.wtimeout
+			options.maxTimeMS = options.wtimeout
 
 			//sort -> options.sort
-			if(
-				_.isArray(sort) && 
-				_.isArray(sort[0]) && 
-				sort[0].length === 2 && _.isString(sort[0][0])
-			) {
-				options.sort = {}
-				options.sort[sort[0][0]] = sort[0][1]
-			}
+			options.sort = sort
 
 			return new Promise(function(resolve, reject) {
 				if(options.remove) mdb.collection(col).findOneAndDelete(query, options, function(err, result) {
 					if(err) reject(err)
-					else resolve(result)
+					else resolve(result.value)
 				})
 				else mdb.collection(col).findOneAndUpdate(query, doc, options, function(err, result) {
 					if(err) reject(err)
-					else resolve(result)
+					else resolve(result.value)
 				})
 			})
 		}
@@ -369,9 +352,9 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 		//ok
 		th.cols[col].findOneAndUpdate = function(filter, update, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).findOneAndUpdate(filter || {}, update || {}, options || null, function(err, result) {
+				mdb.collection(col).findOneAndUpdate(filter || {}, update || {}, options || {}, function(err, result) {
 					if(err) reject(err)
-					else resolve(result)
+					else resolve(result.value)
 				})
 			})
 		}
@@ -379,9 +362,9 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 		//ok
 		th.cols[col].findOneAndDelete = function(filter, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).findOneAndDelete(filter || {}, options || null, function(err, result) {
+				mdb.collection(col).findOneAndDelete(filter || {}, options || {}, function(err, result) {
 					if(err) reject(err)
-					else resolve(result)
+					else resolve(result.value)
 				})
 			})
 		}

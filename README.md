@@ -29,6 +29,17 @@ db.user.find()
 
 if no `global.Promise`, will use `promise` module.
 
+## migrate from 0.3 to 0.4
+
+0.3 support mongodb 1.4.3, 0.4 support mongodb 2.0.25, but old methods are all implanted, nothing would break. a few tips:
+- add new methods: `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany`, `findOneAndUpdate` and `findOneAndRemove`
+- removed `drop` since it will break the collection
+- `remove`, `update`, `insert` methods are marked for deprecation and will be removed in a future 3.0 driver, but `promise-mongo` still support them, inside the function `promise-mongo` use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany`, so no worries.
+- but use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany` is still preferred for performance reason.
+- `collection.find` in 2.0.25 prefer chain command like `collection.find().limit(1)` instead of `collection.find({}, { limit: 1})`, but it is still supported for now.
+- `findAndModify` is deprecated in 2.0.25, but `promise-mongo` still support it by proxy it to `findOneAndUpdate` and `findOneAndRemove`, but `findOneAndUpdate` and `findOneAndRemove` is preferred for performance reason.
+
+
 ## Installation
 
 ```bash
@@ -196,6 +207,8 @@ $ mocha --reporter spec
 ```
 
 ## change log
+
+0.4.0 support mongodb 2.0.25, rewrite tests.
 
 0.3.0
 
