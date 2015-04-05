@@ -196,7 +196,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 		//ok
 		th.cols[col].updateOne = function(selector, doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).update(selector || {}, doc || {}, options || {}, function(err, result) {
+				mdb.collection(col).updateOne(selector || {}, doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
@@ -206,7 +206,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 		//ok
 		th.cols[col].updateMany = function(selector, doc, options) {
 			return new Promise(function(resolve, reject) {
-				mdb.collection(col).update(selector || {}, doc || {}, options || {}, function(err, result) {
+				mdb.collection(col).updateMany(selector || {}, doc || {}, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})
