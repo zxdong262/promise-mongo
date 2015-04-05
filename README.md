@@ -93,15 +93,15 @@ var mongo = PM.mongo
 ,Server = mongo.Server
 ,repls = new RepelSet([
 	new Server({
-		host: '10.10.5.100'
+		host: '100.100.5.100'
 		,port: '27017'
 	})
 	,new Server({
-		host: '10.10.5.99'
+		host: '100.100.5.99'
 		,port: '27017'
 	})
 	,new Server({
-		host: '10.10.5.98'
+		host: '100.100.5.98'
 		,port: '27017'
 	})
 ])

@@ -15,21 +15,21 @@ var mongo = pm.mongo
 ,RepelSet = mongo.ReplSet
 ,Server = mongo.Server
 ,repels = new RepelSet([
-	new Server({
-		host: '100.100.5.100'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.99'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.98'
-		,port: '27017'
-	})
+	new Server(
+		'100.100.5.100'
+		,27017
+	)
+	,new Server(
+		'100.100.5.99'
+		,27017
+	)
+	,new Server(
+		'100.100.5.98'
+		,27017
+	)
 ])
-
 */
+
 
 describe('pm.initDb', function() {
 	it('all db collection Methods created', function(done) {
