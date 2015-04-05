@@ -38,7 +38,7 @@ if no `global.Promise`, will use `promise` module.
 - but use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany` is still preferred for performance reason.
 - `collection.find` in 2.0.25 prefer chain command like `collection.find().limit(1)` instead of `collection.find({}, { limit: 1})`, but it is still supported for now.
 - `findAndModify` is deprecated in 2.0.25, but `promise-mongo` still support it by proxy it to `findOneAndUpdate` and `findOneAndRemove`, but `findOneAndUpdate` and `findOneAndRemove` is preferred for performance reason.
-
+- new Server({port:xxx, host: xxxx}) -> new Server({'host', 'port'})
 
 ## Installation
 
@@ -91,19 +91,19 @@ var collectionNames = [ 'user', 'book', 'post' ]
 var mongo = PM.mongo
 ,RepelSet = mongo.ReplSet
 ,Server = mongo.Server
-,repls = new RepelSet([
-	new Server({
-		host: '100.100.5.100'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.99'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.98'
-		,port: '27017'
-	})
+,repels = new RepelSet([
+	new Server(
+		'100.100.5.100'
+		,27017
+	)
+	,new Server(
+		'100.100.5.99'
+		,27017
+	)
+	,new Server(
+		'100.100.5.98'
+		,27017
+	)
 ])
 
 pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
@@ -126,11 +126,7 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
 		console.log(user)
 	})
 
-	db.user.find({}, {
-		limit: 1
-		,skip: 1
-		,fields: { _id: 0 }
-	})
+	db.user.find()
 	.then(cf.toArray)
 	.then(function(users) {
 		console.log(users)
@@ -158,16 +154,23 @@ collection methods:
 db.collectionName.findOne = function(query, options)
 db.collectionName.save = function(doc) 
 db.collectionName.find = function(query, options) 
-db.collectionName.update = function(selector, doc, options) 
-db.collectionName.remove = function(selector, options) 
+db.collectionName.updateOne = function(selector, doc, options) 
+db.collectionName.updateMany = function(selector, doc, options) 
+db.collectionName.deleteOne = function(selector, options) 
+db.collectionName.deleteMany = function(selector, options) 
 db.collectionName.group = function(keys, condition, initial, reduce, finalize, command, options) 
-db.collectionName.insert = function(doc, options) 
 db.collectionName.mapReduce = function(map, reduce, options) 
 db.collectionName.insertMany = function(docs, options) 
 db.collectionName.insertOne = function(doc, options) 
-db.collectionName.count = function(query, options) 
-db.collectionName.drop = function() 
-db.collectionName.findAndModify = function(query, sort, doc, options) 
+db.collectionName.count = function(query, options)
+db.collectionName.findOneAndUpdate = function(filter, update, options)
+db.collectionName.findOneAndDelete = function(filter, options)
+
+//still support but prefer to not use 
+db.collectionName.update = function(selector, doc, options) 
+db.collectionName.insert = function(doc, options)
+db.collectionName.findAndModify = function(query, sort, doc, options)
+db.collectionName.remove = function(selector, options) 
 ```
 
 cursor methods:
