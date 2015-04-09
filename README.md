@@ -208,6 +208,8 @@ $ mocha --reporter spec
 
 ## change log
 
+0.4.1 support mongodb 2.0.27, all methods have test, `group` have default options
+
 0.4.0 support mongodb 2.0.25, rewrite tests.
 
 0.3.0

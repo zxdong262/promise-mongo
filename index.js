@@ -257,7 +257,7 @@ PM.prototype.initColMethods = function(mdb, collectionNames) {
 		th.cols[col].group = function(keys, condition, initial, reduce, finalize, command, options) {
 			return new Promise(function(resolve, reject) {
 				mdb.collection(col)
-				.group(keys, condition, initial, reduce, finalize, command, options || {}, function(err, result) {
+				.group(keys || {}, condition || {}, initial || {}, reduce || '', finalize || '', command, options || {}, function(err, result) {
 					if(err) reject(err)
 					else resolve(result)
 				})

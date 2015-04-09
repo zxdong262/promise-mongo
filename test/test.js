@@ -4,7 +4,7 @@ var PM = require('..')
 var pm = new PM()
 var readFile = require('fs').readFile
 var uid = new Date().getTime()
-var collectionNames = ['user' + uid, 'post' + uid]
+var collectionNames = ['user' + uid, 'post' + uid, 'lang' + uid]
 var dbUrl = 'mongodb://127.0.0.1:27017/test' + uid
 var _ = require('lodash')
 var util = require('util')
@@ -34,7 +34,7 @@ var mongo = pm.mongo
 describe('pm.initDb', function() {
 	it('all db collection Methods created', function(done) {
 		/*! 
- 		 * test with replset
+		 * test with replset
 
 		pm.initDb(collectionNames, dbUrl, { replSet: repels })
 
@@ -382,6 +382,58 @@ function test() {
 			.then(cf.toArray)
 			.then(function(res) {
 				assert(res.length && !res[0]._id)
+				done()
+			})
+			
+		})
+
+		it('db.col.distinct()',function(done) {
+
+			db['user' + uid].insertMany([{adis:0, bdis:{cdis:'adis'}}, {adis:1, bdis:{cdis:'b'}}, {adis:1, bdis:{cdis:'c'}},
+		{adis:2, b:{cdis:'a'}}, {adis:3}, {adis:3}])
+			.then(function(res) {
+				return db['user' + uid].distinct('adis')
+			})
+
+			.then(function(res) {
+				res = res.sort()
+				assert(res.length === 4 && res[0] === 0)
+				done()
+			})
+			
+		})
+
+
+		it('db.col.group()',function(done) {
+
+			db['lang' + uid].insertMany(
+				[
+					{'title' : 'java sun', 'author' : 'jk', 'day' : '2012-12-14', 'tags' : ['java', 'nosql', 'spring']}
+					,{'title' : 'SSH2', 'author' : 'cj', 'day' : '2012-5-10', 'tags' : ['struts2', 'hibernate', 'spring']}
+					,{'title' : 'C#', 'author' : 'zt', 'day' : '2012-4-3', 'tags' : ['C#', 'SQL']}
+					,{'title' : 'PHP Mongo', 'author' : 'lx', 'day' : '2012-12-14', 'tags' : ['PHP', 'nosql', 'mongo']}
+				]
+			)
+			.then(function(res) {
+				return db['lang' + uid].group(
+					{}
+					,{}
+					,{ tags:[], a: 1}
+					,function(doc, prev) {
+						prev.tags.push('a')
+						prev.a ++
+					}
+					,function(prev) {
+						prev.a ++
+					}
+					,true
+					,{}
+				)
+			})
+
+			.then(function(res) {
+				//console.log(res)
+				assert(res[0].a === 6 && res[0].tags.length === 4)
 				done()
 			})
 			
