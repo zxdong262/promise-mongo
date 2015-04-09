@@ -439,6 +439,36 @@ function test() {
 			
 		})
 
+		it('db.col.mapReduce()',function(done) {
+
+			db['post' + uid].insertMany(
+				[
+					{mr:1, 'title' : 'java sun', 'author' : 'jk', 'day' : '2012-12-14', 'tags' : ['java', 'nosql', 'spring']}
+					,{mr:1, 'title' : 'SSH2', 'author' : 'cj', 'day' : '2012-5-10', 'tags' : ['struts2', 'hibernate', 'spring']}
+					,{mr:1, 'title' : 'C#', 'author' : 'zt', 'day' : '2012-4-3', 'tags' : ['C#', 'SQL']}
+					,{mr:1, 'title' : 'PHP Mongo', 'author' : 'lx', 'day' : '2012-12-14', 'tags' : ['PHP', 'nosql', 'mongo']}
+				]
+			)
+			.then(function(res) {
+				return db['post' + uid].mapReduce(
+					function() {
+						emit(this.title, this.tags.length)
+					}
+					,function(title, mr) {
+					}
+					,{
+						out: {inline:1}
+					}
+				)
+			})
+
+			.then(function(res) {
+				assert(res.length === 4)
+				done()
+			})
+			
+		})
+
 		//todo, more...
 
 
