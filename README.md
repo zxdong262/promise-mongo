@@ -32,12 +32,12 @@ if no `global.Promise`, will use `promise` module.
 ## migrate from 0.3 to 0.4
 
 0.3 support mongodb 1.4.3, 0.4 support mongodb 2.0.25, but old methods are all implanted, nothing would break. a few tips:
-- add new methods: `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany`, `findOneAndUpdate` and `findOneAndRemove`
+- add new methods: `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany`, `findOneAndUpdate` and `findOneAndDelete`
 - removed `drop` since it will break the collection
 - `remove`, `update`, `insert` methods are marked for deprecation and will be removed in a future 3.0 driver, but `promise-mongo` still support them, inside the function `promise-mongo` use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany`, so no worries.
 - but use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany` is still preferred for performance reason.
 - `collection.find` in 2.0.25 prefer chain command like `collection.find().limit(1)` instead of `collection.find({}, { limit: 1})`, but it is still supported for now.
-- `findAndModify` is deprecated in 2.0.25, but `promise-mongo` still support it by proxy it to `findOneAndUpdate` and `findOneAndRemove`, but `findOneAndUpdate` and `findOneAndRemove` is preferred for performance reason.
+- `findAndModify` is deprecated in 2.0.25, but `promise-mongo` still support it by proxy it to `findOneAndUpdate` and `findOneAndDelete`, but `findOneAndUpdate` and `findOneAndDelete` is preferred for performance reason.
 
 
 ## Installation
@@ -158,16 +158,22 @@ collection methods:
 db.collectionName.findOne = function(query, options)
 db.collectionName.save = function(doc) 
 db.collectionName.find = function(query, options) 
-db.collectionName.update = function(selector, doc, options) 
-db.collectionName.remove = function(selector, options) 
+db.collectionName.update = function(selector, doc, options)  //deprecated
+db.collectionName.updateOne = function(selector, doc, options) 
+db.collectionName.updateMany = function(selector, doc, options) 
+db.collectionName.remove = function(selector, options)  //deprecated
+db.collectionName.deleteOne = function(selector, options) 
+db.collectionName.deleteMany = function(selector, options) 
 db.collectionName.group = function(keys, condition, initial, reduce, finalize, command, options) 
-db.collectionName.insert = function(doc, options) 
-db.collectionName.mapReduce = function(map, reduce, options) 
+db.collectionName.insert = function(doc, options)  //deprecated
 db.collectionName.insertMany = function(docs, options) 
 db.collectionName.insertOne = function(doc, options) 
+db.collectionName.mapReduce = function(map, reduce, options) 
 db.collectionName.count = function(query, options) 
 db.collectionName.drop = function() 
-db.collectionName.findAndModify = function(query, sort, doc, options) 
+db.collectionName.findAndModify = function(query, sort, doc, options) //deprecated
+db.collectionName.findOneAndUpdate = function(query, sort, doc, options) 
+db.collectionName.findOneAndDelete = function(query, sort, doc, options) 
 ```
 
 cursor methods:
