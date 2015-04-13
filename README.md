@@ -172,8 +172,8 @@ db.collectionName.mapReduce = function(map, reduce, options)
 db.collectionName.count = function(query, options) 
 db.collectionName.drop = function() 
 db.collectionName.findAndModify = function(query, sort, doc, options) //deprecated
-db.collectionName.findOneAndUpdate = function(query, sort, doc, options) 
-db.collectionName.findOneAndDelete = function(query, sort, doc, options) 
+db.collectionName.findOneAndUpdate = function(filter, update, options) 
+db.collectionName.findOneAndDelete = function(filter, options)
 ```
 
 cursor methods:
