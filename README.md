@@ -201,7 +201,6 @@ pm.mdb
 
 ## test
 
-test cases is not complete yet.
 make sure `'mongodb://127.0.0.1:27017/test'` is available or edit test yourself.
 
 ```bash
