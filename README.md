@@ -38,7 +38,7 @@ if no `global.Promise`, will use `promise` module.
 - but use `deleteOne`, `deleteMany`, `updateOne`, `updateMany`, `insertOne`, `insertMany` is still preferred for performance reason.
 - `collection.find` in 2.0.25 prefer chain command like `collection.find().limit(1)` instead of `collection.find({}, { limit: 1})`, but it is still supported for now.
 - `findAndModify` is deprecated in 2.0.25, but `promise-mongo` still support it by proxy it to `findOneAndUpdate` and `findOneAndDelete`, but `findOneAndUpdate` and `findOneAndDelete` is preferred for performance reason.
-
+- use `new Server('100.100.5.100', 27017)` instead of  `new Server( { host: '100.100.5.100', port: '27017' } )`
 
 ## Installation
 
@@ -91,19 +91,19 @@ var collectionNames = [ 'user', 'book', 'post' ]
 var mongo = PM.mongo
 ,RepelSet = mongo.ReplSet
 ,Server = mongo.Server
-,repls = new RepelSet([
-	new Server({
-		host: '100.100.5.100'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.99'
-		,port: '27017'
-	})
-	,new Server({
-		host: '100.100.5.98'
-		,port: '27017'
-	})
+,repels = new RepelSet([
+	new Server(
+		'100.100.5.100'
+		,27017
+	)
+	,new Server(
+		'100.100.5.99'
+		,27017
+	)
+	,new Server(
+		'100.100.5.98'
+		,27017
+	)
 ])
 
 pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
