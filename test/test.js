@@ -4,7 +4,7 @@ var PM = require('..')
 var pm = new PM()
 var readFile = require('fs').readFile
 var uid = new Date().getTime()
-var collectionNames = ['user' + uid, 'post' + uid, 'lang' + uid]
+var collectionNames = ['user' + uid, 'post' + uid, 'lang' + uid, 'map']
 var dbUrl = 'mongodb://127.0.0.1:27017/test' + uid
 var _ = require('lodash')
 var util = require('util')
@@ -444,26 +444,41 @@ function test() {
 			db['post' + uid].insertMany(
 				[
 					{mr:1, 'title' : 'java sun', 'author' : 'jk', 'day' : '2012-12-14', 'tags' : ['java', 'nosql', 'spring']}
-					,{mr:1, 'title' : 'SSH2', 'author' : 'cj', 'day' : '2012-5-10', 'tags' : ['struts2', 'hibernate', 'spring']}
-					,{mr:1, 'title' : 'C#', 'author' : 'zt', 'day' : '2012-4-3', 'tags' : ['C#', 'SQL']}
+					,{mr:2, 'title' : 'SSH2', 'author' : 'cj', 'day' : '2012-5-10', 'tags' : ['struts2', 'hibernate', 'spring']}
+					,{mr:2, 'title' : 'C#', 'author' : 'zt', 'day' : '2012-4-3', 'tags' : ['C#', 'SQL']}
 					,{mr:1, 'title' : 'PHP Mongo', 'author' : 'lx', 'day' : '2012-12-14', 'tags' : ['PHP', 'nosql', 'mongo']}
 				]
 			)
 			.then(function(res) {
+
+				var map = function() {
+					emit(this.mr, this.tags.length)
+				}
+				
+				var reduce =  function(title, mr) {
+
+					return Array.sum(mr)
+
+				}
+
 				return db['post' + uid].mapReduce(
-					function() {
-						emit(this.title, this.tags.length)
-					}
-					,function(title, mr) {
-					}
+					map
+					,reduce
 					,{
-						out: {inline:1}
+						out: { replace: 'map' }
+						//,limit: 2
 					}
 				)
 			})
 
 			.then(function(res) {
-				assert(res.length === 4)
+				return db.map.find()
+			})
+			.then(cf.toArray)
+
+			.then(function(res) {
+				//console.log(res)
+				assert(res.length === 2)
 				done()
 			})
 			
