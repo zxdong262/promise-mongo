@@ -50,6 +50,7 @@ describe('pm.initDb', function() {
 function test() {
 	var db = pm.cols
 	var cf = pm.cf
+	var cur = pm.cur
 
 	describe('db.collectionName.collectionMethod()', function() {
 
@@ -490,9 +491,9 @@ function test() {
 
 	})
 
-	describe('cursor.cursorMethod()', function() {
+	describe('cf.cursorMethod()', function() {
 
-		it('cursor.toArray()',function(done) {
+		it('cf.toArray()',function(done) {
 			db['user' + uid].insertMany([{ cta: 1 }, { cta: 1 }, { cta: 1 }, { cta: 1 }])
 			.then(function(res) {
 				return db['user' + uid].find({ cta: 1 })
@@ -504,7 +505,7 @@ function test() {
 			})
 		})
 
-		it('cursor.limit(Number)',function(done) {
+		it('cf.limit(Number)',function(done) {
 			db['user' + uid].insertMany([{ cli: 1 }, { cli: 1 }, { cli: 1 }, { cli: 1 }])
 			.then(function(res) {
 				return db['user' + uid].find({ cli: 1 })
@@ -519,7 +520,7 @@ function test() {
 			})
 		})
 
-		it('cursor.sort(Object)',function(done) {
+		it('cf.sort(Object)',function(done) {
 			db['user' + uid].insertMany([{ cso: 1, nsm: 1 }, { cso: 1, nsm: 2 }, { cso: 1, nsm: 3 }, { cso: 1, nsm: 4 }])
 			.then(function(res) {
 				return db['user' + uid].find({ cso: 1 })
@@ -534,7 +535,7 @@ function test() {
 			})
 		})
 
-		it('cursor.skip(count)',function(done) {
+		it('cf.skip(count)',function(done) {
 			db['user' + uid].insertMany([{ ski: 1 }, { ski: 1 }, { ski: 1 }, { ski: 1 }])
 			.then(function(res) {
 				return db['user' + uid].find({ ski: 1 })
@@ -553,6 +554,62 @@ function test() {
 
 	})
 
+	describe('cur.cursorMethod()', function() {
+
+		it('cur.toArray()',function(done) {
+			db['user' + uid].insertMany([{ curta: 1 }, { curta: 1 }, { curta: 1 }, { curta: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ curta: 1 })
+			})
+			.then(cur.toArray)
+			.then(function(res) {
+				assert(util.isArray(res) || res.length === 4)
+				done()
+			})
+		})
+
+		it('cur.limit(Number)',function(done) {
+			db['user' + uid].insertMany([{ curli: 1 }, { curli: 1 }, { curli: 1 }, { curli: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ curli: 1 })
+			})
+			.then(cur.limit(1))
+			.then(cf.toArray)
+			.then(function(res) {
+				assert(res.length === 1)
+				done()
+			})
+		})
+
+		it('cur.sort(Object)',function(done) {
+			db['user' + uid].insertMany([{ curso: 1, nsm: 1 }, { curso: 1, nsm: 2 }, { curso: 1, nsm: 3 }, { curso: 1, nsm: 4 }])
+			.then(function(res) {
+				return db['user' + uid].find({ curso: 1 })
+			})
+			.then(cur.sort({ nsm: -1 }))
+			.then(cur.toArray)
+			.then(function(res) {
+				assert(res[0].nsm === 4)
+				done()
+			})
+		})
+
+		it('cur.skip(count)',function(done) {
+			db['user' + uid].insertMany([{ curski: 1 }, { curski: 1 }, { curski: 1 }, { curski: 1 }])
+			.then(function(res) {
+				return db['user' + uid].find({ curski: 1 })
+			})
+			.then(cur.skip(1))
+			.then(cur.toArray)
+			.then(function(res) {
+
+				assert(res.length === 3)
+				done()
+			})
+		})
+
+
+	})
 
 	describe('mongodb instance exposed', function() {
 

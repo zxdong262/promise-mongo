@@ -17,7 +17,7 @@ db.user.findOne({ name: 'zxd' })
 
 //or
 db.user.find()
-.then(cf.toArray)
+.then(cur.toArray)
 .then(function(docs) {
 	console.log(docs)
 	//[{ name: 'zxd', _id: 54b9e4e6ab3af9ac298e241e }, { name: 'aya', _id: 54b9e4e6ab3af9ac298e2421 } ]
@@ -62,7 +62,7 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test')
 	var db = pm.cols
 
 	//cursor functions reference
-	var cf = pm.cf
+	var cur = pm.cur
 
 	//now do it
 	db.user.findOne()
@@ -71,10 +71,10 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test')
 	})
 
 	db.user.find()
-	.then(function(cursor) {
-		return cf.limit(cursor, 2)
-	})
-	.then(cf.toArray)
+	.then(cur.limit(2))
+	.then(cur.skip(1))
+	.then(cur.sort({ name: -1 }))
+	.then(cur.toArray)
 	.then(function(users) {
 		console.log(users)
 	})
@@ -116,7 +116,7 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
 	var db = pm.cols
 
 	//cursor functions reference
-	var cf = pm.cf
+	var cur = pm.cur
 
 	//now do it
 	db.user.findOne({ name: 'aya' }, {
@@ -131,16 +131,16 @@ pm.initDb(collectionNames, 'mongodb://127.0.0.1:27017/test', { replSet: repls })
 		,skip: 1
 		,fields: { _id: 0 }
 	})
-	.then(cf.toArray)
+	.then(cur.toArray)
 	.then(function(users) {
 		console.log(users)
 	})
 
 	db.user.find()
-	.then(function(cur) {
-		return cf.limit(cur, 1)
-	})
-	.then(cf.toArray)
+	.then(cur.limit(1))
+	.then(cur.skip(1))
+	.then(cur.sort({ name: -1 }))
+	.then(cur.toArray)
 	.then(function(users) {
 		console.log(users)
 	})
@@ -179,10 +179,19 @@ db.collectionName.findOneAndDelete = function(filter, options)
 cursor methods:
 
 ```javascript
-cf.sort = function(cursor, obj)
-cf.toArray = function(cursor) 
-cf.limit  = function(cursor, count) 
-cf.skip = function(cursor, count) 
+cf.sort = function(cursor, obj)//Deprecated
+cf.toArray = function(cursor) //Deprecated
+cf.limit  = function(cursor, count) //Deprecated
+cf.skip = function(cursor, count) //Deprecated
+```
+
+since 1.1.0 use `cur.cursorMethod` instead of `cf.cursorMethod`, but `cur.cursorMethod` is still keeped for legacy reason, so nothing would break.
+
+```javascript
+cur.sort = function(Object)
+cur.toArray = function() 
+cur.limit  = function(count) 
+cur.skip = function(count) 
 ```
 
 exposed function & reference
@@ -204,14 +213,16 @@ pm.mdb
 make sure `'mongodb://127.0.0.1:27017/test'` is available or edit test yourself.
 
 ```bash
-$ git clone https://github.com/zxdong262/promise-mongo.git
-$ cd promise-mongo
-$ sudo npm install
-$ sudo npm install mocha -g
-$ mocha --reporter spec
+git clone https://github.com/zxdong262/promise-mongo.git
+cd promise-mongo
+sudo npm install
+sudo npm install mocha -g
+mocha --reporter spec
 ```
 
 ## change log
+
+1.1.0 add pm.cur.cursorMethods
 
 0.4.2 add test for `mapReduce`
 

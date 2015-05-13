@@ -20,6 +20,7 @@ PM.mongo = mongo
 
 PM.prototype.init = function() {
 	this.cf = {}
+	this.cur = {}
 	this.cols = {}
 	this.mongo = mongo
 }
@@ -386,6 +387,7 @@ PM.prototype.initCursorMethods = function() {
 
 	var th = this
 	,cf = th.cf
+	,cur = th.cur
 	
 	cf.toArray = function(cur) {
 		return new Promise(function(resolve, reject) {
@@ -409,6 +411,37 @@ PM.prototype.initCursorMethods = function() {
 	//Deprecated
 	cf.skip = function(cur, count) {
 		return Promise.resolve(cur.skip(count || 0))
+	}
+
+
+	//new cursor functions, more friendly, 
+	//fix https://github.com/zxdong262/promise-mongo/issues/2
+
+	cur.toArray = function(cur) {
+		return new Promise(function(resolve, reject) {
+			cur.toArray(function(err, val) {
+				if(err) reject(err)
+				else resolve(val)
+			})
+		})
+	}
+
+	cur.limit = function(count) {
+		return function(cur) {
+			return Promise.resolve(cur.limit(count || 0))
+		}
+	}
+
+	cur.sort = function(sort) {
+		return function(cur) {
+			return Promise.resolve(cur.sort(sort || {}))
+		}
+	}
+
+	cur.skip = function(count) {
+		return function(cur) {
+			return Promise.resolve(cur.skip(count || 0))
+		}
 	}
 
 	return Promise.resolve()
