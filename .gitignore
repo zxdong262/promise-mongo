@@ -1,5 +1,5 @@
 # Logs
 *.log
-
+*.rdb
 # deps
 /node_modules/

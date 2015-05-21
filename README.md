@@ -176,6 +176,8 @@ db.collectionName.findOneAndUpdate = function(filter, update, options)
 db.collectionName.findOneAndDelete = function(filter, options)
 ```
 
+read <a href='http://mongodb.github.io/node-mongodb-native/2.0/api-docs/'>http://mongodb.github.io/node-mongodb-native/2.0/api-docs/</a> for details.
+
 cursor methods:
 
 ```javascript
