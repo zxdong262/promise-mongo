@@ -187,7 +187,7 @@ cf.limit  = function(cursor, count) //Deprecated
 cf.skip = function(cursor, count) //Deprecated
 ```
 
-since 1.1.0 use `cur.cursorMethod` instead of `cf.cursorMethod`, but `cur.cursorMethod` is still keeped for legacy reason, so nothing would break.
+since 1.1.0 use `cur.cursorMethod` instead of `cf.cursorMethod`, but `cf.cursorMethod` is still keeped for legacy reason, so nothing would break.
 
 ```javascript
 cur.sort = function(Object)
