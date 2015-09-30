@@ -224,6 +224,8 @@ mocha --reporter spec
 
 ## change log
 
+2.0.0 use mongodb 2.0.44, compatible with node v4, you may need install `libkrb5-dev` by `sudo apt-get install libkrb5-dev` or something else.
+
 1.1.0 add pm.cur.cursorMethods
 
 0.4.2 add test for `mapReduce`
