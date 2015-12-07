@@ -433,7 +433,7 @@ function test() {
 			})
 
 			.then(function(res) {
-				//console.log(res)
+				console.log(res)
 				assert(res[0].a === 6 && res[0].tags.length === 4)
 				done()
 			})

@@ -25,6 +25,10 @@ db.user.find()
 
 ```
 
+## install note
+
+if failed when installing kerberos, you may need `sudo apt-get install libkrb5-dev`
+
 ## about promise
 
 if no `global.Promise`, will use `promise` module.
