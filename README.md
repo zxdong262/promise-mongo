@@ -23,6 +23,9 @@ db.user.find()
 	//[{ name: 'zxd', _id: 54b9e4e6ab3af9ac298e241e }, { name: 'aya', _id: 54b9e4e6ab3af9ac298e2421 } ]
 })
 
+//or in koa/co
+var user = yield db.user.findOne({ name: 'zxd' })
+
 ```
 
 ## install note
@@ -51,6 +54,8 @@ $ npm install promise-mongo
 ```
 
 ## use
+
+see more example from `test/test.js`
 
 ```javascript
 var PM = require('promise-mongo')
