@@ -233,7 +233,7 @@ mocha
 
 ## change log
 
-3.0.0 rewrite with es6 feature, drop promise/lodash module dependency, support node 4.0+ only.
+3.0.0 rewrite with es6 feature, drop promise/lodash module dependency, support node 4.0+ only, use mongodb native 2.1.7.
 
 2.0.0 use mongodb 2.0.44, compatible with node v4, you may need install `libkrb5-dev` by `sudo apt-get install libkrb5-dev` or something else.
 
