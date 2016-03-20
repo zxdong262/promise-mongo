@@ -6,7 +6,6 @@ var readFile = require('fs').readFile
 var uid = new Date().getTime()
 var collectionNames = ['user' + uid, 'post' + uid, 'lang' + uid, 'map']
 var dbUrl = 'mongodb://127.0.0.1:27017/test' + uid
-var _ = require('lodash')
 var util = require('util')
 
 /*! 
@@ -433,7 +432,6 @@ function test() {
 			})
 
 			.then(function(res) {
-				console.log(res)
 				assert(res[0].a === 6 && res[0].tags.length === 4)
 				done()
 			})

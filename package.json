@@ -1,6 +1,6 @@
 {
 	"name": "promise-mongo"
-	,"version": "2.0.1"
+	,"version": "3.0.0"
 	,"description": "a mongodb wrapper, make everything return promise."
 	,"main": "index.js"
 	,"scripts": {
@@ -19,16 +19,11 @@
 		,"email": "zxdong@gmail.com"
 		,"url": "http://html5beta.com"
 	}
-	,"scripts": {
-		"start": "node app.js"
-	}
 	,"dependencies": {
-		"lodash": "*"
-		,"mongodb": "^2.0.44"
-		,"promise": "*"
+		"mongodb": "*"
 	}
 	,"devDependencies": {
-		"mocha": "^2.0.0"
+		"mocha": "*"
 	}
 	,"license": "MIT"
 	,"bugs": {
@@ -36,6 +31,6 @@
 	}
 	,"homepage": "https://github.com/zxdong262/promise-mongo"
 	,"engines": {
-		"node": ">= 0.10.0"
+		"node": ">= 4"
 	}
 }

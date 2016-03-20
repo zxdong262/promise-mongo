@@ -185,7 +185,7 @@ db.collectionName.findOneAndUpdate = function(filter, update, options)
 db.collectionName.findOneAndDelete = function(filter, options)
 ```
 
-read <a href='http://mongodb.github.io/node-mongodb-native/2.0/api-docs/'>http://mongodb.github.io/node-mongodb-native/2.0/api-docs/</a> for details.
+read <a href='http://mongodb.github.io/node-mongodb-native/2.1/api-docs/'>http://mongodb.github.io/node-mongodb-native/2.0/api-docs/</a> for details.
 
 cursor methods:
 
@@ -228,10 +228,12 @@ git clone https://github.com/zxdong262/promise-mongo.git
 cd promise-mongo
 sudo npm install
 sudo npm install mocha -g
-mocha --reporter spec
+mocha
 ```
 
 ## change log
+
+3.0.0 rewrite with es6 feature, drop promise/lodash module dependency, support node 4.0+ only.
 
 2.0.0 use mongodb 2.0.44, compatible with node v4, you may need install `libkrb5-dev` by `sudo apt-get install libkrb5-dev` or something else.
 
