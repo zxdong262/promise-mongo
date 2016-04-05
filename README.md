@@ -1,4 +1,5 @@
 # promise-mongo
+[![Build Status](https://travis-ci.org/zxdong262/promise-mongo.svg?branch=master)](https://travis-ci.org/zxdong262/promise-mongo)
 
 a mongodb wrapper, make everything return promise.
 
