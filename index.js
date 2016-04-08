@@ -24,8 +24,8 @@ class PM {
 	 * @return {Function}
 	 * @api public
 	 */
-	toPromise () {
-		return function(thunk) {
+	toPromise (thunk) {
+		return function() {
 
 			//arguments to array
 			let len = arguments.length
