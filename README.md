@@ -1,5 +1,8 @@
 # promise-mongo
+
 [![Build Status](https://travis-ci.org/zxdong262/promise-mongo.svg?branch=master)](https://travis-ci.org/zxdong262/promise-mongo)
+
+since mongodb native driver has full support of promise, this project is not needed and will not be maintained.
 
 a mongodb wrapper, make everything return promise.
 
